@@ -54,10 +54,20 @@ public class MNK extends Jeu{
         play();
 	}
 
-	public void play(){
+    @Override
+    public Coup newCoup() {
+        return new CoupMNK();
+    }
+
+    @Override
+    public Coup newCoup(int[][] etat) {
+        return new CoupMNK(etat);
+    }
+
+    public void play(){
 		if((!gagner(new CoupMNK(plateau)))&&!termine()){
 			System.out.println(tour==1?"Joueur":"Ordi");
-			participants[tour-1].play();
+			jouerUnCoup(participants[tour - 1].play());
 		}
 	}
 	
@@ -111,34 +121,28 @@ public class MNK extends Jeu{
             return 0;
         }
     }
+      
+    public Arbre<Coup> listerTousCoupPossible(int couleur) {
+        Arbre<Coup> racine=new Arbre<Coup>(new CoupMNK(Fonctions.cloner(plateau)));
+        listerTousCoupPossible(racine,couleur);
+        return racine;
 
-	public Arbre<Coup> listerTousCoupPossible() {
-		Arbre<Coup> listeCoup = new Arbre<Coup>(new CoupMNK(Fonctions.cloner(plateau)));
-		genererArbre(listeCoup,tour);
-		listeCoup.actualiserProfondeur();
-		return listeCoup;
-	}
-	
-	private void genererArbre(Arbre<Coup> ar,int turn){
-		int[][] plat = Fonctions.cloner(ar.getNoeud().getEtat());
-		for(int i=0;i<plat.length;i++){
-			for(int j=0;j<plat[i].length;j++){
-				if(plat[i][j]==0){
-					int[][] copiePlat = Fonctions.cloner(plat);
-					copiePlat[i][j]=turn;
-					Arbre<Coup> coup= new Arbre<Coup>(new CoupMNK(Fonctions.cloner(copiePlat)));
-					ar.addFils(coup);
-					if(!gagner(coup.getNoeud())){
-						genererArbre(coup,turn==1?2:1);
-					}
-					else{
-						coup.setValeur(1);
-					}
-				}
-			}
-		}
-	}
+    }
 
+    public void listerTousCoupPossible(Arbre<Coup> racine, int couleur) {
+        int[][] plat = Fonctions.cloner(racine.getNoeud().getEtat());
+        for(int i=0;i<plat.length;i++){
+            for(int j=0;j<plat[i].length;j++){
+                if(plat[i][j]==0){
+                    int[][] copiePlat = Fonctions.cloner(plat);
+                    copiePlat[i][j]=couleur;
+                    Arbre<Coup> coup= new Arbre<Coup>(new CoupMNK(Fonctions.cloner(copiePlat)));
+                    racine.addFils(coup);
+                }
+            }
+        }
+		racine.actualiserProfondeur();
+	}
 	
 	public boolean gagner(Coup c) {
 		return gagner(c,1)||gagner(c,2);
@@ -173,17 +177,11 @@ public class MNK extends Jeu{
 		return n;
 	}
 
-	@Override
 	public int[][] getCopyPlateau() {
 		return Fonctions.cloner(plateau);
 	}
 
-	@Override
 	public int getTour() {
 		return tour;
-	}
-
-	
-	
-	
+    }
 }

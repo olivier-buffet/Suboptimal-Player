@@ -3,17 +3,22 @@
  */
 package Plateau;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public abstract class Strategie {
 
-    public abstract void compute(Arbre<Coup> parent);
-    public abstract void compute(Arbre<Coup> parent, double omega);
-    
+    protected double omega;
+    protected double drunken;
+    protected Random random;
+    protected long count;
+    protected Jeu jeu;
 
-    public double max(Arbre<Coup> parent){
+    public double max(ArrayList<Arbre<Coup>> fils){
         double max=Double.NEGATIVE_INFINITY;
-        for(Arbre<Coup> node : parent.getFils()) {
-            if(node.getValeur() > max){
-                max = node.getValeur();
+        for(Arbre<Coup> e : fils) {
+            if(e.getValeur() > max){
+                max = e.getValeur();
             }
         }
         return max;

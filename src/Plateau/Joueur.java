@@ -17,12 +17,12 @@ public class Joueur implements Participant {
     }
 
     public Joueur(Jeu jeu, PipedOutputStream out) throws IOException {
+        this(out);
         this.jeu=jeu;
-        this.in=new PipedInputStream(out);
     }
 
     @Override
-    public void play() {
+    public Coup play() {
         int[][] plateau = jeu.getCopyPlateau();
         int i=0;
         int j=0;
@@ -34,10 +34,8 @@ public class Joueur implements Participant {
         } catch (IOException e) {
             e.printStackTrace();
             jeu.init();
-            return;
-        }
-
-        jeu.jouerUnCoup(new CoupMNK(plateau));
+         }
+        return jeu.newCoup(plateau);
     }
 
     public void setJeu(Jeu jeu){

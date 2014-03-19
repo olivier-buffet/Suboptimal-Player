@@ -19,10 +19,18 @@ public class Arbre <T>{
 	public void addFils(Arbre<T> a){
 		liste.add(a);
 	}
-	
+
 	public ArrayList<Arbre<T>> getFils(){
 		return liste;
 	}
+
+    public void setFils(ArrayList<Arbre<T>> liste){
+        this.liste=liste;
+    }
+
+    public void resetFils(){
+        liste=new ArrayList<Arbre<T>>();
+    }
 	
 	public int getProfondeur() {
 		return profondeur;
