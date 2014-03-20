@@ -54,8 +54,8 @@ public class NegaAlphaBeta extends Strategie implements Participant {
 
     public double negaAlphaBetaInit(Arbre<Coup> parent,int tour, double a, double b){
         jeu.listerTousCoupPossible(parent,tour);
-        if(jeu.gagner(parent.getNoeud())){
-            return parent.getValeur();
+        if(jeu.gagner(parent.getNoeud()) || parent.getFils().isEmpty()){
+            return 1;
         }else{
             double meilleur=Double.NEGATIVE_INFINITY;
             for(Arbre<Coup> fils : parent.getFils()){
@@ -77,7 +77,7 @@ public class NegaAlphaBeta extends Strategie implements Participant {
     public double negaAlphaBeta(Arbre<Coup> parent,int tour, double a, double b){
         count++;
         jeu.listerTousCoupPossible(parent,tour);
-        if(jeu.gagner(parent.getNoeud())){
+        if(jeu.gagner(parent.getNoeud()) || parent.getFils().isEmpty()){
             parent.resetFils();
             return 1;
         }else{

@@ -32,11 +32,15 @@ public class NegaMax extends Strategie implements Participant{
         jeu.listerTousCoupPossible(racine,jeu.getTour());
         if(random.nextDouble()>drunken){
             for(Arbre<Coup> fils : racine.getFils()){
-                negaMax(fils,jeu.getTour()^3,omega);
+                if(!jeu.gagner(fils.getNoeud())){
+                    negaMax(fils,jeu.getTour()^3,omega);
+                }else{
+                    fils.setValeur(1);
+                }
             }
             double gain=Double.NEGATIVE_INFINITY;
             for(Arbre<Coup> node : racine.getFils()){
-                //System.out.println(node.getValeur());
+                System.out.println(node.getValeur());
                 if(node.getValeur()>gain){
                     gain=node.getValeur();
                 }
