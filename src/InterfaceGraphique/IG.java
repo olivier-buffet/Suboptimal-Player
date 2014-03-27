@@ -20,7 +20,7 @@ public class IG extends JFrame{
 		PipedOutputStream out=new PipedOutputStream();
         Participant[] participants=null;
         try {
-            participants= new Participant[]{new NegaMax(), new Joueur(out)};
+            participants= new Participant[]{ new NegaAlphaBeta(), new Joueur(out)};
         } catch (Exception e) {
             System.exit(-1);
         }
@@ -57,7 +57,8 @@ public class IG extends JFrame{
 		menu.add(game);
 		
 		this.add(menu,BorderLayout.NORTH);
-		
+
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.pack();
 		this.setVisible(true);
 		m.play();

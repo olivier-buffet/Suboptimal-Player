@@ -3,7 +3,10 @@
  */
 package Plateau;
 
+import Utilitaires.Chrono;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class NegaMax extends Strategie implements Participant{
@@ -13,6 +16,7 @@ public class NegaMax extends Strategie implements Participant{
         this.drunken=0;
         this.random=new Random();
         this.count=0;
+        this.chrono=new Chrono();
         this.jeu=null;
     }
 
@@ -28,47 +32,51 @@ public class NegaMax extends Strategie implements Participant{
 
     public Coup play(){
         count=0;
-        Arbre<Coup> racine=new Arbre<Coup>(jeu.newCoup(jeu.getCopyPlateau()));
-        jeu.listerTousCoupPossible(racine,jeu.getTour());
+        Coup racine=jeu.current();
+        List<Coup> fils=jeu.listerTousCoupPossible(racine,jeu.getTour());
+        double[] valeurs=new double[fils.size()];
         if(random.nextDouble()>drunken){
-            for(Arbre<Coup> fils : racine.getFils()){
-                if(!jeu.gagner(fils.getNoeud())){
-                    negaMax(fils,jeu.getTour()^3,omega);
-                }else{
-                    fils.setValeur(1);
+            chrono.start();
+            double max=Double.NEGATIVE_INFINITY;
+            for(int i=0;i<fils.size();i++){
+                valeurs[i]=negaMax(fils.get(i), jeu.getTour() ^ 3, omega);
+                if(valeurs[i]>max){
+                    max=valeurs[i];
                 }
             }
-            double gain=Double.NEGATIVE_INFINITY;
-            for(Arbre<Coup> node : racine.getFils()){
-                System.out.println(node.getValeur());
-                if(node.getValeur()>gain){
-                    gain=node.getValeur();
+            List<Coup> coupJouable=new ArrayList<>(9);
+            for(int i=0;i<fils.size();i++){
+                System.out.println(valeurs[i]);
+                if(valeurs[i]>=max){
+                    coupJouable.add(fils.get(i));
                 }
             }
-            ArrayList<Coup> coupJouable=new ArrayList<Coup>(9);
-            for(Arbre<Coup> node : racine.getFils()){
-                if(node.getValeur()==gain){
-                    coupJouable.add(node.getNoeud());
-                }
-            }
-            System.out.println(count);
+            chrono.stop();
+            System.out.println(count + " noeuds visite(s) en " + chrono);
             return coupJouable.get(random.nextInt(coupJouable.size()));
-        }else return racine.getFils().get(random.nextInt(racine.getFils().size())).getNoeud();
+        }else{
+            return fils.get(random.nextInt(fils.size()));
+        }
     }
 
-    public void negaMax(Arbre<Coup> parent, int tour, double omega){
+    public double negaMax(Coup parent, int tour, double omega) {
         count++;
-        jeu.listerTousCoupPossible(parent,tour);
-        for(Arbre<Coup> fils : parent.getFils()){
-            if(!jeu.gagner(fils.getNoeud())){
-                negaMax(fils,tour^3,omega*omega);
-            }else{
-                fils.setValeur(1);
+        if (jeu.gagner(parent)) {
+            return 1;
+        } else {
+            List<Coup> fils = jeu.listerTousCoupPossible(parent, tour);
+            if (fils.isEmpty()) {
+                return 0;
+            } else {
+                double valeur = 0, max = Double.NEGATIVE_INFINITY;
+                for (int i = 0; i < fils.size(); i++) {
+                    valeur = negaMax(fils.get(i), tour ^ 3, omega * omega);
+                    if (valeur > max) {
+                        max = valeur;
+                    }
+                }
+                return -max * omega;
             }
-        }
-        if(parent.getFils().size()>0){
-            parent.setValeur(-max(parent.getFils()));
-            parent.resetFils();
         }
     }
 

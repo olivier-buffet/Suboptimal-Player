@@ -3,7 +3,9 @@
  */
 package Plateau;
 
-import java.util.ArrayList;
+import Utilitaires.Chrono;
+
+import java.util.List;
 import java.util.Random;
 
 public abstract class Strategie {
@@ -12,9 +14,10 @@ public abstract class Strategie {
     protected double drunken;
     protected Random random;
     protected long count;
+    protected Chrono chrono;
     protected Jeu jeu;
 
-    public double max(ArrayList<Arbre<Coup>> fils){
+    public double max(List<Arbre<Coup>> fils){
         double max=Double.NEGATIVE_INFINITY;
         for(Arbre<Coup> e : fils) {
             if(e.getValeur() > max){

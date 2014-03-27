@@ -1,5 +1,6 @@
 package Plateau;
 
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -12,9 +13,9 @@ public abstract class Jeu extends Observable {
     
     public abstract boolean gagner(Coup c, int couleur);
     
-    public abstract Arbre<Coup> listerTousCoupPossible(int couleur);
+    public abstract Coup current();
 
-    public abstract void listerTousCoupPossible(Arbre<Coup> racine, int couleur);
+    public abstract List<Coup> listerTousCoupPossible(Coup racine, int couleur);
     
     public abstract boolean gagner(Coup c);
     

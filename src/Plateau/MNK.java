@@ -5,6 +5,7 @@ import InterfaceGraphique.IG;
 import Utilitaires.Fonctions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MNK extends Jeu{
@@ -22,9 +23,9 @@ public class MNK extends Jeu{
 	public MNK() {
         ListeCoup=new ArrayList<Coup>();
         tour=1;
-        m=3;
-		n=3;
-		k=3;
+        m=4;
+		n=4;
+		k=4;
 		plateau = new int[m][n];
 		for(int i=0;i<plateau.length;i++){
 			for(int j=0;j<plateau[i].length;j++){
@@ -122,26 +123,24 @@ public class MNK extends Jeu{
         }
     }
       
-    public Arbre<Coup> listerTousCoupPossible(int couleur) {
-        Arbre<Coup> racine=new Arbre<Coup>(new CoupMNK(Fonctions.cloner(plateau)));
-        listerTousCoupPossible(racine,couleur);
-        return racine;
-
+    public Coup current() {
+        return new CoupMNK(Fonctions.cloner(plateau));
     }
 
-    public void listerTousCoupPossible(Arbre<Coup> racine, int couleur) {
-        int[][] plat = Fonctions.cloner(racine.getNoeud().getEtat());
+    public List<Coup> listerTousCoupPossible(Coup racine, int couleur) {
+        int[][] plat = racine.getEtat();
+        List<Coup> fils=new ArrayList<>();
         for(int i=0;i<plat.length;i++){
             for(int j=0;j<plat[i].length;j++){
                 if(plat[i][j]==0){
                     int[][] copiePlat = Fonctions.cloner(plat);
                     copiePlat[i][j]=couleur;
-                    Arbre<Coup> coup= new Arbre<Coup>(new CoupMNK(Fonctions.cloner(copiePlat)));
-                    racine.addFils(coup);
+                    Coup coup= new CoupMNK(copiePlat);
+                    fils.add(coup);
                 }
             }
         }
-		racine.actualiserProfondeur();
+		return fils;
 	}
 	
 	public boolean gagner(Coup c) {
@@ -183,5 +182,9 @@ public class MNK extends Jeu{
 
 	public int getTour() {
 		return tour;
+    }
+
+    public void setPlateau(int[][] plat){
+        this.plateau=plat;
     }
 }
