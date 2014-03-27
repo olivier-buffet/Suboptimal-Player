@@ -15,7 +15,7 @@ Joueur O (bot, 16 cases vides)
 -0.0
 -0.0
 -0.0
-1102582985 noeuds visite(s) en 15'39"900 (plus rapide en vrai car augmentation memoire de la pile necessaire)
+1102582985 noeuds visite(s) en 15'39"900
 Joueur X (joueur, 15 cases vides)
 Joueur O (14 cases vides)
 -0.0
