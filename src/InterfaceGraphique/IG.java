@@ -20,7 +20,7 @@ public class IG extends JFrame{
 		PipedOutputStream out=new PipedOutputStream();
         Participant[] participants=null;
         try {
-            participants= new Participant[]{ new NegaAlphaBeta(), new Joueur(out)};
+            participants= new Participant[]{new Joueur(out),new NegaMax()};
         } catch (Exception e) {
             System.exit(-1);
         }

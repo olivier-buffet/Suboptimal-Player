@@ -4,6 +4,7 @@
 package Plateau;
 
 import Utilitaires.Chrono;
+import Utilitaires.Fonctions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +38,27 @@ public class NegaMax extends Strategie implements Participant{
         double[] valeurs=new double[fils.size()];
         if(random.nextDouble()>drunken){
             chrono.start();
-            double max=Double.NEGATIVE_INFINITY;
-            for(int i=0;i<fils.size();i++){
-                valeurs[i]=negaMax(fils.get(i), jeu.getTour() ^ 3, omega);
-                if(valeurs[i]>max){
-                    max=valeurs[i];
+            valeurs[0]=negaMax(fils.get(0),jeu.getTour()^3,omega);
+            double max=valeurs[0];
+            int nb_branches=1;
+            for(int i=1;i<fils.size();i++){
+                boolean compute=true;
+                int[][] rot90= Fonctions.rotation90(fils.get(i).getEtat());
+                int[][] rot180= Fonctions.rotation90(rot90);
+                int[][] rot270= Fonctions.rotation90(rot180);
+                for(int j=0;j<i;j++){
+                    if(Fonctions.isSame(fils.get(j).getEtat(),rot90) || Fonctions.isSame(fils.get(j).getEtat(),rot180) || Fonctions.isSame(fils.get(j).getEtat(),rot270)){
+                        valeurs[i]=valeurs[j];
+                        compute=false;
+                        break;
+                    }
+                }
+                if(compute) {
+                    nb_branches++;
+                    valeurs[i] = negaMax(fils.get(i), jeu.getTour() ^ 3,omega);
+                    if (valeurs[i] > max) {
+                        max = valeurs[i];
+                    }
                 }
             }
             List<Coup> coupJouable=new ArrayList<>(9);
@@ -52,7 +69,7 @@ public class NegaMax extends Strategie implements Participant{
                 }
             }
             chrono.stop();
-            System.out.println(count + " noeuds visite(s) en " + chrono);
+            System.out.println(nb_branches+"/"+fils.size()+" branche(s) developpee(s), "+count + " noeuds visite(s) en " + chrono);
             return coupJouable.get(random.nextInt(coupJouable.size()));
         }else{
             return fils.get(random.nextInt(fils.size()));

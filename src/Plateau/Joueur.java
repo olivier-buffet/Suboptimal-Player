@@ -28,8 +28,8 @@ public class Joueur implements Participant {
         int j=0;
         try {
             i=in.read();
-            j=i%4;
-            i=i/4;
+            j=i%plateau[0].length;
+            i=i/plateau[0].length;
             plateau[i][j]=jeu.getTour();
         } catch (IOException e) {
             e.printStackTrace();

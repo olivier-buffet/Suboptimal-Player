@@ -24,7 +24,7 @@ public class MNK extends Jeu{
         ListeCoup=new ArrayList<Coup>();
         tour=1;
         m=4;
-		n=4;
+		n=3;
 		k=4;
 		plateau = new int[m][n];
 		for(int i=0;i<plateau.length;i++){
@@ -66,8 +66,8 @@ public class MNK extends Jeu{
     }
 
     public void play(){
-		if((!gagner(new CoupMNK(plateau)))&&!termine()){
-			System.out.println(tour==1?"Joueur":"Ordi");
+		while((!gagner(new CoupMNK(plateau)))&&!termine()){
+			System.out.println(tour==1?"Joueur O":"Joueur X");
 			jouerUnCoup(participants[tour - 1].play());
 		}
 	}
@@ -77,7 +77,6 @@ public class MNK extends Jeu{
 		ListeCoup.add(c);
 		tour=tour==1?2:1;
 		vue.MAJ();
-		play();
 	}
 	
 	public boolean termine(){
