@@ -5,6 +5,7 @@ import InterfaceGraphique.IG;
 import Utilitaires.Fonctions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MNK extends Jeu{
@@ -22,9 +23,9 @@ public class MNK extends Jeu{
 	public MNK() {
         ListeCoup=new ArrayList<Coup>();
         tour=1;
-        m=3;
+        m=4;
 		n=3;
-		k=3;
+		k=4;
 		plateau = new int[m][n];
 		for(int i=0;i<plateau.length;i++){
 			for(int j=0;j<plateau[i].length;j++){
@@ -54,10 +55,20 @@ public class MNK extends Jeu{
         play();
 	}
 
-	public void play(){
-		if((!gagner(new CoupMNK(plateau)))&&!termine()){
-			System.out.println(tour==1?"Joueur":"Ordi");
-			participants[tour-1].play();
+    @Override
+    public Coup newCoup() {
+        return new CoupMNK();
+    }
+
+    @Override
+    public Coup newCoup(int[][] etat) {
+        return new CoupMNK(etat);
+    }
+
+    public void play(){
+		while((!gagner(new CoupMNK(plateau)))&&!termine()){
+			System.out.println(tour==1?"Joueur O":"Joueur X");
+			jouerUnCoup(participants[tour - 1].play());
 		}
 	}
 	
@@ -66,7 +77,6 @@ public class MNK extends Jeu{
 		ListeCoup.add(c);
 		tour=tour==1?2:1;
 		vue.MAJ();
-		play();
 	}
 	
 	public boolean termine(){
@@ -111,34 +121,26 @@ public class MNK extends Jeu{
             return 0;
         }
     }
+      
+    public Coup current() {
+        return new CoupMNK(Fonctions.cloner(plateau));
+    }
 
-	public Arbre<Coup> listerTousCoupPossible() {
-		Arbre<Coup> listeCoup = new Arbre<Coup>(new CoupMNK(Fonctions.cloner(plateau)));
-		genererArbre(listeCoup,tour);
-		listeCoup.actualiserProfondeur();
-		return listeCoup;
+    public List<Coup> listerTousCoupPossible(Coup racine, int couleur) {
+        int[][] plat = racine.getEtat();
+        List<Coup> fils=new ArrayList<>();
+        for(int i=0;i<plat.length;i++){
+            for(int j=0;j<plat[i].length;j++){
+                if(plat[i][j]==0){
+                    int[][] copiePlat = Fonctions.cloner(plat);
+                    copiePlat[i][j]=couleur;
+                    Coup coup= new CoupMNK(copiePlat);
+                    fils.add(coup);
+                }
+            }
+        }
+		return fils;
 	}
-	
-	private void genererArbre(Arbre<Coup> ar,int turn){
-		int[][] plat = Fonctions.cloner(ar.getNoeud().getEtat());
-		for(int i=0;i<plat.length;i++){
-			for(int j=0;j<plat[i].length;j++){
-				if(plat[i][j]==0){
-					int[][] copiePlat = Fonctions.cloner(plat);
-					copiePlat[i][j]=turn;
-					Arbre<Coup> coup= new Arbre<Coup>(new CoupMNK(Fonctions.cloner(copiePlat)));
-					ar.addFils(coup);
-					if(!gagner(coup.getNoeud())){
-						genererArbre(coup,turn==1?2:1);
-					}
-					else{
-						coup.setValeur(1);
-					}
-				}
-			}
-		}
-	}
-
 	
 	public boolean gagner(Coup c) {
 		return gagner(c,1)||gagner(c,2);
@@ -173,17 +175,15 @@ public class MNK extends Jeu{
 		return n;
 	}
 
-	@Override
 	public int[][] getCopyPlateau() {
 		return Fonctions.cloner(plateau);
 	}
 
-	@Override
 	public int getTour() {
 		return tour;
-	}
+    }
 
-	
-	
-	
+    public void setPlateau(int[][] plat){
+        this.plateau=plat;
+    }
 }

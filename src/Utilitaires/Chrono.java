@@ -32,7 +32,7 @@ public class Chrono {
         long ms=time%1000;
         long s=(time/1000)%60;
         long m=(time/60000)%60;
-        return m+"'"+s+"\""+ms;
+        return m+"'"+s+"\""+((ms<100)?("0"+((ms<10)?"0":"")):"")+ms;
     }
 
     public static void main(String args[]){

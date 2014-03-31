@@ -1,6 +1,3 @@
-/**
- * Created by Xavier on 17/02/14.
- */
 package Plateau;
 
 import Utilitaires.Chrono;
@@ -10,9 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class NegaMax extends Strategie implements Participant{
+/**
+ * Created by Xavier on 19/03/14.
+ */
+public class NegaAlphaBeta extends Strategie implements Participant {
 
-    public NegaMax(){
+    public NegaAlphaBeta(){
         this.omega=1.;
         this.drunken=0;
         this.random=new Random();
@@ -21,12 +21,12 @@ public class NegaMax extends Strategie implements Participant{
         this.jeu=null;
     }
 
-    public NegaMax(double omega){
+    public NegaAlphaBeta(double omega){
         this();
         this.omega=omega;
     }
 
-    public NegaMax(double omega, double drunken){
+    public NegaAlphaBeta(double omega, double drunken){
         this(omega);
         this.drunken=drunken;
     }
@@ -38,7 +38,7 @@ public class NegaMax extends Strategie implements Participant{
         double[] valeurs=new double[fils.size()];
         if(random.nextDouble()>drunken){
             chrono.start();
-            valeurs[0]=negaMax(fils.get(0),jeu.getTour()^3,omega);
+            valeurs[0]=negaAlphaBeta(fils.get(0),jeu.getTour()^3,-2,2);
             double max=valeurs[0];
             int nb_branches=1;
             for(int i=1;i<fils.size();i++){
@@ -55,7 +55,7 @@ public class NegaMax extends Strategie implements Participant{
                 }
                 if(compute) {
                     nb_branches++;
-                    valeurs[i] = negaMax(fils.get(i), jeu.getTour() ^ 3,omega);
+                    valeurs[i] = negaAlphaBeta(fils.get(i), jeu.getTour() ^ 3, -2, 2);
                     if (valeurs[i] > max) {
                         max = valeurs[i];
                     }
@@ -75,29 +75,41 @@ public class NegaMax extends Strategie implements Participant{
             return fils.get(random.nextInt(fils.size()));
         }
     }
-
-    public double negaMax(Coup parent, int tour, double omega) {
+      
+    public double negaAlphaBeta(Coup parent,int tour, double a, double b){
         count++;
-        if (jeu.gagner(parent)) {
+        if(jeu.gagner(parent)){
             return 1;
         } else {
-            List<Coup> fils = jeu.listerTousCoupPossible(parent, tour);
-            if (fils.isEmpty()) {
+            List<Coup> fils=jeu.listerTousCoupPossible(parent,tour);
+            if(fils.isEmpty()){
                 return 0;
             } else {
-                double valeur = 0, max = Double.NEGATIVE_INFINITY;
+                double valeur = 0; //double max = Double.NEGATIVE_INFINITY;
                 for (int i = 0; i < fils.size(); i++) {
-                    valeur = negaMax(fils.get(i), tour ^ 3, omega * omega);
-                    if (valeur > max) {
+                    valeur = negaAlphaBeta(fils.get(i), tour ^ 3, -b, -a);
+                    /*if (valeur > max) {
                         max = valeur;
-                    }
+                        if (valeur > a) {
+                            a = valeur;
+                            if (a >= b) {
+                                return -a;
+                            }
+                        }
+                    }*/
+                    if (valeur >= b)
+                        return -b;   //  fail hard beta-cutoff
+                    if (valeur > a)
+                        a = valeur;
                 }
-                return -max * omega;
+                //return -max;
+                return -a;
             }
         }
     }
 
-    public void setJeu(Jeu jeu){
+    @Override
+    public void setJeu(Jeu jeu) {
         this.jeu=jeu;
     }
 }

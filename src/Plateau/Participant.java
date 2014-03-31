@@ -4,7 +4,7 @@
 package Plateau;
 
 public interface Participant {
-    public void play();
+    public Coup play();
 
     public void setJeu(Jeu jeu);
 }

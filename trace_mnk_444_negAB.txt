@@ -1,0 +1,98 @@
+Joueur O (bot, 16 cases vides)
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+1102582985 noeuds visite(s) en 15'39"900
+Joueur X (joueur, 15 cases vides)
+Joueur O (14 cases vides)
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+142142456 noeuds visite(s) en 1'58"091
+Joueur X (13 cases vides)
+Joueur O (12 cases vides)
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+5084064 noeuds visite(s) en 0'4"460
+Joueur X (11 cases vides)
+Joueur O (10 cases vides)
+-1.0
+-1.0
+-1.0
+-0.0
+-1.0
+-1.0
+-1.0
+-1.0
+-1.0
+-1.0
+42663 noeuds visite(s) en 0'0"043
+Joueur X
+Joueur O
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+-0.0
+5253 noeuds visite(s) en 0'0"006
+Joueur X
+Joueur O
+-1.0
+-1.0
+-1.0
+-0.0
+-1.0
+-1.0
+427 noeuds visite(s) en 0'0"001
+Joueur X
+Joueur O
+-1.0
+-0.0
+-1.0
+-1.0
+40 noeuds visite(s) en 0'0"000
+Joueur X
+Joueur O
+-0.0
+-0.0
+4 noeuds visite(s) en 0'0"000
+Joueur X
+
+Process finished with exit code 0

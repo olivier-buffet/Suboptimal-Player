@@ -17,27 +17,25 @@ public class Joueur implements Participant {
     }
 
     public Joueur(Jeu jeu, PipedOutputStream out) throws IOException {
+        this(out);
         this.jeu=jeu;
-        this.in=new PipedInputStream(out);
     }
 
     @Override
-    public void play() {
+    public Coup play() {
         int[][] plateau = jeu.getCopyPlateau();
         int i=0;
         int j=0;
         try {
             i=in.read();
-            j=i%3;
-            i=i/3;
+            j=i%plateau[0].length;
+            i=i/plateau[0].length;
             plateau[i][j]=jeu.getTour();
         } catch (IOException e) {
             e.printStackTrace();
             jeu.init();
-            return;
-        }
-
-        jeu.jouerUnCoup(new CoupMNK(plateau));
+         }
+        return jeu.newCoup(plateau);
     }
 
     public void setJeu(Jeu jeu){

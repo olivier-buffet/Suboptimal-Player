@@ -13,9 +13,9 @@ public class Fonctions {
     public static int[][] rotation90(int[][] tab){
         int l=tab.length,c=tab[0].length;
         int[][] newArray=new int[c][l];
-        for (int i=0;i<l;i++)
-            for(int j=c-1;j>0;j--){
-                newArray[j][i]=tab[i][j];
+        for (int i=0;i<c;i++)
+            for(int j=0;j<l;j++){
+                newArray[i][j]=tab[j][c-1-i];
             }
         return newArray;
     }

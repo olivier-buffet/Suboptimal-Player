@@ -9,7 +9,7 @@ package Plateau;
  * @author Phongphet
  */
 public interface Coup {
-	
+    
 	public int[][] getEtat();
-	
+    public void setEtat(int [][] etat);
 }
