@@ -17,15 +17,14 @@ public class MNK extends Jeu{
 	private Participant[] participants;
 	private int tour;
 	private ArrayList<Coup> ListeCoup;
-	private IG vue;
 
 	
-	public MNK() {
+	public MNK(int m, int n, int k) {
         ListeCoup=new ArrayList<Coup>();
         tour=1;
-        m=4;
-		n=3;
-		k=4;
+        this.m=m;
+		this.n=n;
+		this.k=k;
 		plateau = new int[m][n];
 		for(int i=0;i<plateau.length;i++){
 			for(int j=0;j<plateau[i].length;j++){
@@ -34,8 +33,8 @@ public class MNK extends Jeu{
 		}
     }
 	
-	public MNK(Participant[] participants){
-		this();
+	public MNK(int m, int n, int k, Participant[] participants){
+		this(m,n,k);
 		this.participants=participants;
         for(Participant p: participants){
             p.setJeu(this);
@@ -67,16 +66,20 @@ public class MNK extends Jeu{
 
     public void play(){
 		while((!gagner(new CoupMNK(plateau)))&&!termine()){
-			System.out.println(tour==1?"Joueur O":"Joueur X");
+			//System.out.println(tour==1?"Joueur O":"Joueur X");
 			jouerUnCoup(participants[tour - 1].play());
 		}
+
 	}
 	
 	public void jouerUnCoup(Coup c) {
+        if(gagner(c))
+            System.out.println(tour==1?"Joueur O":"Joueur X");
 		plateau = Fonctions.cloner(c.getEtat());
 		ListeCoup.add(c);
 		tour=tour==1?2:1;
-		vue.MAJ();
+		this.setChanged();
+        this.notifyObservers();
 	}
 	
 	public boolean termine(){
@@ -157,10 +160,6 @@ public class MNK extends Jeu{
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	public void setVue(IG ig) {
-		this.vue=ig;
 	}
 
 	public int[][] getPlateau() {

@@ -11,5 +11,5 @@ package Plateau;
 public interface Coup {
     
 	public int[][] getEtat();
-    public void setEtat(int [][] etat);
+    public void setEtat(int[][] etat);
 }

@@ -20,6 +20,38 @@ public class Fonctions {
         return newArray;
     }
 
+    public static int[][] symetrieH(int[][] tab){
+        int l=tab.length;
+        int[][] newArray=new int[l][tab[0].length];
+        for (int i=0;i<=l/2;i++){
+            for(int j=0;j<tab[0].length;j++){
+                newArray[i][j]=tab[l-i-1][j];
+            }
+        }
+        for (int i=l-1;i>=l/2;i--){
+            for(int j=0;j<tab[0].length;j++){
+                newArray[i][j]=tab[l-i-1][j];
+            }
+        }
+        return newArray;
+    }
+
+    public static int[][] symetrieV(int[][] tab) {
+        int c = tab[0].length;
+        int[][] newArray = new int[tab.length][c];
+        for (int i = 0; i < tab.length; i++) {
+            for (int j = 0; j <= c/2; j++) {
+                newArray[i][j] = tab[i][c-j-1];
+            }
+        }
+        for (int i = 0; i < tab.length; i++) {
+            for (int j = c-1; j >= c/2; j--) {
+                newArray[i][j] = tab[i][c-j-1];
+            }
+        }
+        return newArray;
+    }
+
     public static boolean isSame(int[][] tab, int[][] tab2){
         if(tab.length==tab2.length && tab[0].length==tab2[0].length){
             for (int i=0;i<tab.length;i++)

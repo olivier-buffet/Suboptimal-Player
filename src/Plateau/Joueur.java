@@ -1,6 +1,7 @@
 package Plateau;
 
 import java.io.*;
+import java.util.concurrent.Semaphore;
 
 /**
  * Created by Xavier on 26/02/14.
@@ -8,32 +9,31 @@ import java.io.*;
 public class Joueur implements Participant {
 
     protected Jeu jeu;
-    protected InputStream in;
+    protected int[] xy;
+    protected Semaphore s1,s2;
 
 
-    public  Joueur(PipedOutputStream out) throws IOException{
+    public  Joueur(int[] xy, Semaphore s1, Semaphore s2) throws IOException{
         this.jeu=null;
-        this.in=new PipedInputStream(out);
+        this.xy=xy;
+        this.s1=s1;
+        this.s2=s2;
     }
 
-    public Joueur(Jeu jeu, PipedOutputStream out) throws IOException {
-        this(out);
+    public Joueur(int[] xy, Semaphore s1, Semaphore s2, Jeu jeu) throws IOException {
+        this(xy,s1,s2);
         this.jeu=jeu;
     }
 
     @Override
     public Coup play() {
         int[][] plateau = jeu.getCopyPlateau();
-        int i=0;
-        int j=0;
         try {
-            i=in.read();
-            j=i%plateau[0].length;
-            i=i/plateau[0].length;
-            plateau[i][j]=jeu.getTour();
-        } catch (IOException e) {
+            s2.acquire();
+            plateau[xy[0]][xy[1]]=jeu.getTour();
+            s1.release();
+        } catch (InterruptedException e) {
             e.printStackTrace();
-            jeu.init();
          }
         return jeu.newCoup(plateau);
     }

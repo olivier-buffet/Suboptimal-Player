@@ -12,6 +12,8 @@ import java.util.Random;
  */
 public class NegaAlphaBeta extends Strategie implements Participant {
 
+    protected Heuristique2MNK heuristique;
+
     public NegaAlphaBeta(){
         this.omega=1.;
         this.drunken=0;
@@ -19,15 +21,22 @@ public class NegaAlphaBeta extends Strategie implements Participant {
         this.count=0;
         this.chrono=new Chrono();
         this.jeu=null;
+        this.heuristique=new Heuristique2MNK();
+        this.profondeur=7;
     }
 
-    public NegaAlphaBeta(double omega){
+    public NegaAlphaBeta(int profondeur){
         this();
+        this.profondeur=profondeur;
+    }
+
+    public NegaAlphaBeta(int profondeur, double omega){
+        this(profondeur);
         this.omega=omega;
     }
 
-    public NegaAlphaBeta(double omega, double drunken){
-        this(omega);
+    public NegaAlphaBeta(int profondeur, double omega, double drunken){
+        this(profondeur,omega);
         this.drunken=drunken;
     }
 
@@ -38,16 +47,22 @@ public class NegaAlphaBeta extends Strategie implements Participant {
         double[] valeurs=new double[fils.size()];
         if(random.nextDouble()>drunken){
             chrono.start();
-            valeurs[0]=negaAlphaBeta(fils.get(0),jeu.getTour()^3,-2,2);
+            valeurs[0]=negaAlphaBeta(fils.get(0), profondeur, jeu.getTour()^3, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
             double max=valeurs[0];
             int nb_branches=1;
             for(int i=1;i<fils.size();i++){
                 boolean compute=true;
                 int[][] rot90= Fonctions.rotation90(fils.get(i).getEtat());
-                int[][] rot180= Fonctions.rotation90(rot90);
+                int[][] rot180= Fonctions.rotation90(rot90); // = symC
                 int[][] rot270= Fonctions.rotation90(rot180);
+                int[][] symV=Fonctions.symetrieV(fils.get(i).getEtat());
+                int[][] symV90=Fonctions.rotation90(symV);
+                int[][] symH=Fonctions.rotation90(symV90);
+                int[][] symH90=Fonctions.rotation90(symH);
                 for(int j=0;j<i;j++){
-                    if(Fonctions.isSame(fils.get(j).getEtat(),rot90) || Fonctions.isSame(fils.get(j).getEtat(),rot180) || Fonctions.isSame(fils.get(j).getEtat(),rot270)){
+                    if(Fonctions.isSame(fils.get(j).getEtat(),rot90) || Fonctions.isSame(fils.get(j).getEtat(),rot180) || Fonctions.isSame(fils.get(j).getEtat(),rot270)
+                            || Fonctions.isSame(fils.get(j).getEtat(),symH) || Fonctions.isSame(fils.get(j).getEtat(),symV)
+                            || Fonctions.isSame(fils.get(j).getEtat(),symH90) || Fonctions.isSame(fils.get(j).getEtat(),symV90)){
                         valeurs[i]=valeurs[j];
                         compute=false;
                         break;
@@ -55,7 +70,7 @@ public class NegaAlphaBeta extends Strategie implements Participant {
                 }
                 if(compute) {
                     nb_branches++;
-                    valeurs[i] = negaAlphaBeta(fils.get(i), jeu.getTour() ^ 3, -2, 2);
+                    valeurs[i] = negaAlphaBeta(fils.get(i), profondeur, jeu.getTour() ^ 3, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
                     if (valeurs[i] > max) {
                         max = valeurs[i];
                     }
@@ -76,18 +91,20 @@ public class NegaAlphaBeta extends Strategie implements Participant {
         }
     }
       
-    public double negaAlphaBeta(Coup parent,int tour, double a, double b){
+    public double negaAlphaBeta(Coup parent, int profondeur, int tour, double a, double b) {
         count++;
-        if(jeu.gagner(parent)){
-            return 1;
+        double best = Double.NEGATIVE_INFINITY;
+        if (jeu.gagner(parent)) {
+            return Double.POSITIVE_INFINITY;
+        } else if (profondeur <= 0) {
+            return heuristique.getValue(parent.getEtat(),tour,4);
         } else {
-            List<Coup> fils=jeu.listerTousCoupPossible(parent,tour);
-            if(fils.isEmpty()){
+            List<Coup> fils = jeu.listerTousCoupPossible(parent, tour);
+            if (fils.isEmpty()) {
                 return 0;
             } else {
-                double valeur = 0; //double max = Double.NEGATIVE_INFINITY;
                 for (int i = 0; i < fils.size(); i++) {
-                    valeur = negaAlphaBeta(fils.get(i), tour ^ 3, -b, -a);
+                    double valeur = negaAlphaBeta(fils.get(i), profondeur - 1, tour ^ 3, -b, -a);
                     /*if (valeur > max) {
                         max = valeur;
                         if (valeur > a) {
@@ -98,12 +115,14 @@ public class NegaAlphaBeta extends Strategie implements Participant {
                         }
                     }*/
                     if (valeur >= b)
-                        return -b;   //  fail hard beta-cutoff
-                    if (valeur > a)
-                        a = valeur;
+                        return -valeur;  // fail-soft beta-cutoff
+                    if (valeur > best) {
+                        best = valeur;
+                        if (valeur > a)
+                            a = valeur;
+                    }
                 }
-                //return -max;
-                return -a;
+                return -best;
             }
         }
     }

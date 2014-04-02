@@ -16,6 +16,8 @@ public abstract class Strategie {
     protected long count;
     protected Chrono chrono;
     protected Jeu jeu;
+    //protected Heuristique heuristique;
+    protected int profondeur;
 
     public double max(List<Arbre<Coup>> fils){
         double max=Double.NEGATIVE_INFINITY;
