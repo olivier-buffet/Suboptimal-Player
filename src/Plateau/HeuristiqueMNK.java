@@ -6,7 +6,7 @@ public class HeuristiqueMNK implements Heuristique{
 
 	ArrayList<PointDir> list= new ArrayList<PointDir>();
 	
-	public int getValue(int[][] tab,int couleur) {
+	public int getValue(int[][] tab,int couleur,int k) {
 		int somme=0;
 		for(int i=0;i<tab.length;i++){
 			for(int j=0;j<tab[0].length;j++){

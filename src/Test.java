@@ -17,10 +17,10 @@ public class Test {
     static int rond=0,croix=0;
 
     public static void main(String args[]){
-        double d1=Double.parseDouble(args[0]),d2=Double.parseDouble(args[0]);
-        participants= new Participant[]{new NegaAlphaBeta(1,d1),new NegaAlphaBeta(1,d2)};
+        //double d1=Double.parseDouble(args[0]),d2=Double.parseDouble(args[0]);
+        participants= new Participant[]{new NegaAlphaBeta(20,1,0.5),new NegaAlphaBeta(20,1,0.3)};
         try {
-            System.setOut(new PrintStream("test"+d1+d2+".txt"));
+            System.setOut(new PrintStream("test.txt"));
         } catch (FileNotFoundException e) {
             System.exit(-1);
         }
@@ -36,7 +36,7 @@ public class Test {
         c.stop();
         System.err.println(c);
         try {
-            BufferedReader br = new BufferedReader(new FileReader("test"+d1+d2+".txt"));
+            BufferedReader br = new BufferedReader(new FileReader("test.txt"));
             String s="";
             while((s=br.readLine())!=null){
                 if(s.equals("Joueur O")){
@@ -49,7 +49,7 @@ public class Test {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.err.println(d1+" "+d2);
+        //System.err.println(d1+" "+d2);
         System.err.println("partie gagner : \nJoueur O : "+rond+"\nJoueur X : "+croix);
     }
 }

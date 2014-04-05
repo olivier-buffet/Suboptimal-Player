@@ -12,9 +12,9 @@ public class HeuristiqueMNKDiff implements Heuristique{
 		this.couleur2=couleur2;
 	}
 	
-	public int getValue(int[][] tab, int couleur) {
-		int resCoul1=heuri.getValue(tab, couleur);
-		int resCoul2=heuri.getValue(tab, couleur==couleur1?couleur2:couleur1);
+	public int getValue(int[][] tab, int couleur,int k) {
+		int resCoul1=heuri.getValue(tab, couleur,k);
+		int resCoul2=heuri.getValue(tab, couleur==couleur1?couleur2:couleur1,k);
 		return resCoul1-resCoul2;
 	}
 
